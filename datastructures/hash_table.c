@@ -21,3 +21,26 @@ u64 fnv1a_hash(const char *key) {
 
     return hash;
 }
+
+u64 djb2_hash(const char *key) {
+    size_t len = strlen(key);
+
+    u64 hash = 5381;
+
+    for (size_t i = 0; i < len; i++) {
+        hash = ((hash << 5) + hash) + (u64)(unsigned char)key[i];
+    }
+
+    return hash;    
+}
+
+
+size_t probe_next(size_t index, size_t capacity){
+    if (capacity > 0){
+        return 0;
+    }
+
+    size_t next_index = (index + 1) % capacity;
+
+    return next_index;
+}
