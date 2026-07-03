@@ -40,3 +40,28 @@ Arena *arena_create(size_t capacity)
 }
 
 
+void *arena_alloc(Arena *arena, size_t size, size_t alignment){
+    if (arena == NULL || size == 0 || alignment == 0 || arena -> memory == NULL) {
+        return NULL;
+    }
+
+    if ((alignment & (alignment -1)) != 0){
+        return NULL;
+    }
+    
+    uintptr_t current_address = (uintptr_t)arena -> memory + arena -> offset;
+
+    uintptr_t aligned_address = (current_address + alignment -1) & ~(alignment -1);
+
+    size_t padding = aligned_address - current_address;
+
+    size_t total_size = size + padding;
+
+    if (arena -> offset + total_size > arena -> capacity){
+        return NULL;
+    }
+
+    arena -> offset += total_size;
+
+    return (void *)aligned_address;
+}
