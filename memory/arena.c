@@ -79,7 +79,7 @@ void arena_reset(Arena *arena) {
 
 void arena_destroy(Arena *arena) {
     if (arena == NULL) {
-        return NULL;
+        return;
     }
 
     if (arena -> memory == NULL){

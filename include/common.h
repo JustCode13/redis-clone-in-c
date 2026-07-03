@@ -62,6 +62,9 @@ typedef int32_t  i32;
 // Short name for a signed 64-bit integer
 typedef int64_t  i64;
 
+// Short name for a signed 64-bit integer
+typedef uintptr_t uptr_t;
+
 
 // Represents the type of data stored in a Redis key
 typedef enum {
