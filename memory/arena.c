@@ -65,3 +65,13 @@ void *arena_alloc(Arena *arena, size_t size, size_t alignment){
 
     return (void *)aligned_address;
 }
+
+
+void arena_reset(Arena *arena) {
+    
+    if (arena == NULL){
+        return;
+    }
+
+    arena -> offset = 0;
+}
