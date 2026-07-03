@@ -75,3 +75,18 @@ void arena_reset(Arena *arena) {
 
     arena -> offset = 0;
 }
+
+
+void arena_destroy(Arena *arena) {
+    if (arena == NULL) {
+        return NULL;
+    }
+
+    if (arena -> memory == NULL){
+        free(arena);
+        return;
+    }
+
+    free(arena -> memory);
+    free(arena);
+}
