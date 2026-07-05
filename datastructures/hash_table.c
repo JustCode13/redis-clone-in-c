@@ -103,3 +103,79 @@ HashEntry *find_slot(HashTable *table,const char *key, u64 hash) {
     return NULL;
 }
 
+
+
+bool rehash_table(HashTable *table, size_t new_capacity){
+    if (table == NULL || new_capacity == 0){
+        return false;
+    }
+
+    if (table -> entries == NULL){
+        return false;
+    }
+
+    if (new_capacity < table -> size){
+        return false;
+    }
+
+    if (new_capacity > SIZE_MAX / sizeof(HashEntry)){ 
+        return false;
+    }
+
+    HashTable new_hashtable = {0};
+
+    HashEntry *new_entries = malloc(new_capacity * sizeof(HashEntry));
+
+    if (new_entries == NULL){
+        return false;
+    }
+
+    memset(new_entries, 0, new_capacity * sizeof(HashEntry));
+
+    new_hashtable.entries = new_entries;
+    new_hashtable.capacity = new_capacity;
+    new_hashtable.size = 0;
+
+
+    for (size_t i = 0; i < table -> capacity; i++){
+        HashEntry *entry = &table -> entries[i];
+
+        if (entry -> state == EMPTY || entry -> state == TOMBSTONE){
+            continue;
+        }
+
+        HashEntry *new_entry = find_slot(&new_hashtable,entry -> key, entry -> hash);
+
+        if (new_entry == NULL) {
+            free(new_entries);
+            return false;
+        }
+
+        new_entry -> hash = entry -> hash;
+
+        new_entry -> key = entry -> key;
+
+        new_entry -> value = entry -> value;
+
+        new_entry -> state = OCCUPIED;
+
+        new_hashtable.size++;
+    }
+
+    if (new_hashtable.size != table -> size){
+        free(new_entries);
+        return false;
+    }
+
+    free(table -> entries);
+
+    table -> entries = new_entries;
+
+    table -> capacity = new_capacity;
+
+    table -> size = new_hashtable.size;
+
+    return true;    
+}
+
+
