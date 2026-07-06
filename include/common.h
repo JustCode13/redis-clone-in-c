@@ -11,6 +11,7 @@
 #include <time.h>         // Time and date related functions
 #include <limits.h>       // Integer limits like INT_MAX, CHAR_MAX
 #include <assert.h>       // assert() for debugging
+#include <stdalign.h>     // align_of() or _Alignof() for getting alignment
 
 // Stores the current version of the Redis project
 #define REDIS_VERSION "1.0.0"
