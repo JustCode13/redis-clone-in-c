@@ -68,3 +68,18 @@ void *checked_realloc(void *ptr, size_t old_size ,size_t size) {
 
     return memory;
 }
+
+void checked_free(void *ptr, size_t size) {
+    if (size == 0){
+        size = 1;
+    }
+    free(ptr);
+
+    memory_stats.total_frees ++;
+    memory_stats.bytes_freed += size;
+    memory_stats.current_memory_usage -= size;
+}
+
+MemoryStats memory_statistics(void) {
+    return memory_stats;
+}
