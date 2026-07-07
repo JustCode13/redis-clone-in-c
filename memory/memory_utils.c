@@ -19,3 +19,24 @@ void *align_pointer(void *ptr, size_t alignment) {
 
     return aligned_ptr;
 }
+
+void *checked_malloc(size_t size) {
+    if (size == 0){
+        return NULL;
+    };
+
+    void *memory = malloc(size);
+
+    if (memory == NULL){
+        return NULL;
+    }
+
+    memory_stats.total_allocations ++;
+    memory_stats.bytes_allocated += size;
+    memory_stats.current_memory_usage += size;
+    if (memory_stats.peak_memory_usage < size){
+        memory_stats.peak_memory_usage += size;
+    }
+
+    return memory;
+}
