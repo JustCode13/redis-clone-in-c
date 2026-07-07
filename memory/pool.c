@@ -85,3 +85,19 @@ void *pool_alloc(PoolAllocator *pool){
 
     return (void *)block;
 }
+
+
+
+void pool_free(PoolAllocator *pool, void *ptr) {
+    if (pool == NULL || ptr == NULL){
+        return;
+    }
+
+    FreeBlock *free_block = (FreeBlock *)ptr;
+
+    free_block -> size = pool -> object_size;
+    
+    free_block -> next = pool -> free_list;
+
+    pool -> free_list = free_block;
+}
