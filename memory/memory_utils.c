@@ -40,3 +40,31 @@ void *checked_malloc(size_t size) {
 
     return memory;
 }
+
+
+void *checked_realloc(void *ptr, size_t old_size ,size_t size) {
+    if (ptr == NULL || size == 0) {
+        return NULL;
+    }
+
+    void *memory = realloc(ptr,size);
+
+    if (memory == NULL) {
+        return NULL;
+    }
+
+    if (old_size < size) {
+        size_t increment = size - old_size;
+        memory_stats.bytes_allocated += increment;
+        memory_stats.current_memory_usage += increment;
+        if (memory_stats.current_memory_usage > memory_stats.peak_memory_usage) {
+            memory_stats.peak_memory_usage = memory_stats.current_memory_usage;
+        }
+    } else {
+        size_t decrement = old_size - size;
+        memory_stats.bytes_freed += decrement;
+        memory_stats.current_memory_usage -= decrement;
+    }
+
+    return memory;
+}
