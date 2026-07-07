@@ -101,3 +101,12 @@ void pool_free(PoolAllocator *pool, void *ptr) {
 
     pool -> free_list = free_block;
 }
+
+void pool_destroy(PoolAllocator *pool) {
+    if (pool == NULL){
+        return;
+    }
+    
+    free(pool -> memory);
+    free(pool);
+}
