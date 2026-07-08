@@ -4,6 +4,47 @@
 #define FNV_OFFSET_BASIS 14695981039346656037ULL
 #define FNV_PRIME 1099511628211ULL
 
+u64 fnv1a_hash(const char *key);
+u64 djb2_hash(const char *key);
+size_t probe_next(size_t index, size_t capacity);
+HashEntry *find_slot(HashTable *table,const char *key, u64 hash);
+bool rehash_table(HashTable *table, size_t new_capacity);
+
+
+HashTable *hash_create(size_t capacity) {
+    if (capacity == 0) {
+        return NULL;
+    }
+
+    HashTable *hash_table = malloc(sizeof(*hash_table));
+
+    if (hash_table == NULL) {
+        return NULL;
+    }
+
+    if (capacity > SIZE_MAX / sizeof(HashEntry)) {
+        free(hash_table);   
+        return NULL;
+    }
+
+    HashEntry *hash_entry = calloc(capacity, sizeof(HashEntry));
+
+    if (hash_entry == NULL) {
+        free(hash_table);
+        return NULL;
+    }
+
+    hash_table -> entries = hash_entry;
+    hash_table -> capacity = capacity;
+    hash_table -> size = 0;
+    hash_table -> tombstones = 0;
+    hash_table -> load_factor = HASH_LOAD_FACTOR;
+
+    return hash_table;
+}
+
+
+
 u64 fnv1a_hash(const char *key) {
 
     // if (key == NULL) {
@@ -34,7 +75,6 @@ u64 djb2_hash(const char *key) {
     return hash;    
 }
 
-
 size_t probe_next(size_t index, size_t capacity){
     if (capacity > 0){
         return 0;
@@ -44,8 +84,6 @@ size_t probe_next(size_t index, size_t capacity){
 
     return next_index;
 }
-
-
 
 HashEntry *find_slot(HashTable *table,const char *key, u64 hash) {
     if (table == NULL || key == NULL) {
@@ -103,9 +141,7 @@ HashEntry *find_slot(HashTable *table,const char *key, u64 hash) {
     return NULL;
 }
 
-
-
-bool rehash_table(HashTable *table, size_t new_capacity){
+bool rehash_table(HashTable *table, size_t new_capacity) {
     if (table == NULL || new_capacity == 0){
         return false;
     }
