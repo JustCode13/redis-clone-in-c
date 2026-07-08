@@ -16,33 +16,86 @@ HashTable *hash_create(size_t capacity) {
         return NULL;
     }
 
-    HashTable *hash_table = malloc(sizeof(*hash_table));
+    HashTable *table = malloc(sizeof(*table));
 
-    if (hash_table == NULL) {
+    if (table == NULL) {
         return NULL;
     }
 
     if (capacity > SIZE_MAX / sizeof(HashEntry)) {
-        free(hash_table);   
+        free(table);   
         return NULL;
     }
 
     HashEntry *hash_entry = calloc(capacity, sizeof(HashEntry));
 
     if (hash_entry == NULL) {
-        free(hash_table);
+        free(table);
         return NULL;
     }
 
-    hash_table -> entries = hash_entry;
-    hash_table -> capacity = capacity;
-    hash_table -> size = 0;
-    hash_table -> tombstones = 0;
-    hash_table -> load_factor = HASH_LOAD_FACTOR;
+    table -> entries = hash_entry;
+    table -> capacity = capacity;
+    table -> size = 0;
+    table -> tombstones = 0;
+    table -> load_factor = HASH_LOAD_FACTOR;
 
-    return hash_table;
+    return table;
 }
 
+
+bool hash_insert(HashTable *table, const char *key, void *value) {
+    if (table == NULL || key == NULL) {
+        return false;
+    }
+
+    if (key[0] == '\0') {
+        return false;
+    }
+
+    float future_load = (float)(table -> size + table -> tombstones + 1) / (float)table -> capacity;
+
+    if (future_load > table -> load_factor) {
+        if (table->capacity > SIZE_MAX / 2)
+            return false;
+
+        size_t new_capacity = table -> capacity * 2;
+
+        if (!hash_resize(table, new_capacity)) {
+            return false;
+        }
+    }
+
+    u64 hash = fnv1a_hash(key);
+
+    HashEntry *entry = find_slot(table,key,hash);
+
+    if (entry == NULL) {
+        return false;
+    }
+
+    if (entry -> state == OCCUPIED) {
+        entry -> value = value;
+        
+        return true;
+    } 
+    
+    if (entry -> state == TOMBSTONE) {
+        table -> tombstones--;
+    }
+
+    entry -> key = strdup(key);
+    if (entry -> key == NULL) {
+        return false;
+    }
+    entry -> value = value;
+    entry -> hash = hash;
+    entry -> state = OCCUPIED;
+
+    table -> size++;
+    
+    return true;
+}
 
 
 u64 fnv1a_hash(const char *key) {
