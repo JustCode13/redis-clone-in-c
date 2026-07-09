@@ -177,8 +177,58 @@ bool hash_remove(HashTable *table, const char *key) {
     return false;
 }
 
+bool hash_resize(HashTable *table, size_t new_capacity) {
+    if (table == NULL || new_capacity == 0) {
+        return false;
+    }
+
+    if (new_capacity > SIZE_MAX / sizeof(HashEntry)) {
+        return false;
+    }
+
+    HashEntry *new_entries = calloc(new_capacity, sizeof(HashEntry));
+
+    if (new_entries == NULL) {
+        return false;
+    }
+
+    size_t size = 0;
+
+    for (size_t i = 0; i < table -> capacity; i ++) {
+        HashEntry *entry = &table -> entries[i];
+
+        if (entry -> state == EMPTY || entry -> state == TOMBSTONE) {
+            continue;
+        }
+
+        size_t index = entry -> hash % new_capacity;
+
+        while (new_entries[index].state == OCCUPIED){
+            index = probe_next(index, new_capacity);
+        }
+
+        new_entries[index].key = entry -> key;
+        new_entries[index].value = entry -> value;
+        new_entries[index].hash = entry -> hash;
+        new_entries[index].state = OCCUPIED;
+
+        size++;
+    }
+
+    free(table -> entries);
+
+    table -> entries = new_entries;
+    table -> capacity = new_capacity;
+    table -> size = size;
+    table -> tombstones = 0;
 
 
+    return true;
+}
+
+void hash_destroy(HashTable *table) {
+
+}
 
 u64 fnv1a_hash(const char *key) {
 
