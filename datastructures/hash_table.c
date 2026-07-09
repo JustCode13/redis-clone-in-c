@@ -227,7 +227,12 @@ bool hash_resize(HashTable *table, size_t new_capacity) {
 }
 
 void hash_destroy(HashTable *table) {
+    if (table == NULL) {
+        return;
+    }
 
+    free(table -> entries);
+    free(table);
 }
 
 u64 fnv1a_hash(const char *key) {
