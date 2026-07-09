@@ -98,6 +98,42 @@ bool hash_insert(HashTable *table, const char *key, void *value) {
 }
 
 
+void *hash_find(HashTable *table, const char *key) {
+    if (table == NULL || key == NULL) {
+        return NULL;
+    }
+
+    if (key[0] == '\0') {
+        return NULL;
+    }
+
+    u64 hash = fnv1a_hash(key);
+    size_t index = hash % table -> capacity;
+    size_t visited = 0;
+
+    while (visited < table -> capacity) {
+        HashEntry *entry = &table -> entries[index];
+
+        if (entry -> state == EMPTY) {
+            return NULL;
+        }
+
+        if (entry -> state == OCCUPIED) {
+            if (entry -> hash == hash) {
+                if (strcmp(entry -> key, key) == 0) {
+                    return entry -> value;
+                }
+            }
+        }
+
+        index = probe_next(index,table -> capacity);
+        visited++;
+    }
+
+    return NULL;
+}
+
+
 u64 fnv1a_hash(const char *key) {
 
     // if (key == NULL) {
