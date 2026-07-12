@@ -85,3 +85,28 @@ void list_remove(List *list, ListNode *node) {
     free(node);
 }
 
+void list_move_front(List *list, ListNode *node) {
+    if (list == NULL || node == NULL) {
+        return;
+    }
+
+    if (node == &list->head || node == &list->tail)  {
+        return;
+    }
+
+    if (node == list->head.next) {
+        return;
+    }
+
+    ListNode *prev_node = node->prev;
+    ListNode *next_node = node->next;
+
+    prev_node->next = next_node;
+    next_node->prev = prev_node;
+
+    node->prev = &list->head;
+    node->next = list->head.next;
+
+    list->head.next->prev = node;
+    list->head.next = node;
+}
