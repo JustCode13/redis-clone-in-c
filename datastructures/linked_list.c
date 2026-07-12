@@ -60,3 +60,28 @@ ListNode *list_push_back(List *list, void *data) {
     
     return node;
 }
+
+void list_remove(List *list, ListNode *node) {
+    if (list == NULL || node == NULL) {
+        return;
+    }
+
+    if (node == &list->head || node == &list->tail)  {
+        return;
+    }
+
+    ListNode *prev_node = node->prev;
+    ListNode *next_node = node->next;
+
+    prev_node->next = next_node;
+    next_node->prev = prev_node;
+
+    node->prev = NULL;
+    node->next = NULL;
+    node->data = NULL;
+
+    list->size--;
+
+    free(node);
+}
+
