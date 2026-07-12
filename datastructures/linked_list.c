@@ -148,3 +148,24 @@ ListNode *list_back(List *list) {
 
     return node;
 }
+
+
+void list_clear(List *list) {
+    if (list == NULL) {
+        return NULL;
+    }
+
+    ListNode *current = list->head.next;
+
+    while (current != &list->tail) {
+        ListNode *next_node = current->next;
+        free(current);
+        current = next_node;
+    }
+
+    list->head.next = &list->tail;
+    list->tail.prev = &list->head;
+    list->size=0;
+}
+
+// head -> a -> b -> tail
