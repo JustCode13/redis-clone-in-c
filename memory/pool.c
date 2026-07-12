@@ -1,12 +1,9 @@
 #include "../include/common.h"
 #include "../include/allocator.h"
 
-PoolAllocator *pool_create(size_t object_size, size_t object_count, size_t alignment){
-    if (object_size < 1 || object_count < 1) {
-        return NULL;
-    }
 
-    if (alignment == 0){
+PoolAllocator *pool_create(size_t object_size, size_t object_count, size_t alignment){
+    if (object_size == 0 || object_count == 0 || alignment == 0) {
         return NULL;
     }
 
@@ -47,18 +44,18 @@ PoolAllocator *pool_create(size_t object_size, size_t object_count, size_t align
         block->size = aligned_object_size;
 
         if (i == object_count -1){
-            block -> next = NULL;
+            block->next = NULL;
         } else {
             u8 *next_address = base + ( i + 1) * aligned_object_size;
-            block -> next = (FreeBlock *)next_address;
+            block->next = (FreeBlock *)next_address;
         }
     }
 
-    pool -> memory = memory;
-    pool -> free_list = (FreeBlock *)memory;
-    pool -> object_size = aligned_object_size;
-    pool -> object_count = object_count;
-    pool -> alignment = alignment;
+    pool->memory = memory;
+    pool->free_list = (FreeBlock *)memory;
+    pool->object_size = aligned_object_size;
+    pool->object_count = object_count;
+    pool->alignment = alignment;
     
     return pool;
 
@@ -75,13 +72,17 @@ void *pool_alloc(PoolAllocator *pool){
         return NULL;    
     }
 
-    if (pool -> free_list == NULL) {
+    if (pool->free_list == NULL) {
         return NULL;
     }
 
-    FreeBlock *block = pool -> free_list;
+    FreeBlock *block = pool->free_list;
 
-    pool -> free_list = block -> next;
+    if (block == NULL) {
+        return NULL;
+    }
+
+    pool->free_list = block->next;
 
     return (void *)block;
 }
@@ -95,11 +96,11 @@ void pool_free(PoolAllocator *pool, void *ptr) {
 
     FreeBlock *free_block = (FreeBlock *)ptr;
 
-    free_block -> size = pool -> object_size;
+    free_block->size = pool->object_size;
     
-    free_block -> next = pool -> free_list;
+    free_block->next = pool->free_list;
 
-    pool -> free_list = free_block;
+    pool->free_list = free_block;
 }
 
 void pool_destroy(PoolAllocator *pool) {
@@ -107,6 +108,6 @@ void pool_destroy(PoolAllocator *pool) {
         return;
     }
     
-    free(pool -> memory);
+    free(pool->memory);
     free(pool);
 }

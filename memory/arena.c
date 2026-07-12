@@ -41,7 +41,11 @@ Arena *arena_create(size_t capacity)
 
 
 void *arena_alloc(Arena *arena, size_t size, size_t alignment){
-    if (arena == NULL || size == 0 || alignment == 0 || arena -> memory == NULL) {
+    if (arena == NULL || size == 0 || alignment == 0) {
+        return NULL;
+    }
+    
+    if (arena->memory == NULL){
         return NULL;
     }
 
@@ -49,7 +53,7 @@ void *arena_alloc(Arena *arena, size_t size, size_t alignment){
         return NULL;
     }
     
-    uintptr_t current_address = (uintptr_t)arena -> memory + arena -> offset;
+    uintptr_t current_address = (uintptr_t)arena->memory + arena->offset;
 
     uintptr_t aligned_address = (current_address + alignment -1) & ~(alignment -1);
 
@@ -57,12 +61,12 @@ void *arena_alloc(Arena *arena, size_t size, size_t alignment){
 
     size_t total_size = size + padding;
 
-    if (arena -> offset + total_size > arena -> capacity){
+    if (arena->offset + total_size > arena->capacity){
         return NULL;
     }
 
-    arena -> offset += total_size;
-
+    arena->offset += total_size;
+    
     return (void *)aligned_address;
 }
 
@@ -73,7 +77,7 @@ void arena_reset(Arena *arena) {
         return;
     }
 
-    arena -> offset = 0;
+    arena->offset = 0;    
 }
 
 
@@ -82,11 +86,11 @@ void arena_destroy(Arena *arena) {
         return;
     }
 
-    if (arena -> memory == NULL){
+    if (arena->memory == NULL){
         free(arena);
         return;
     }
 
-    free(arena -> memory);
+    free(arena->memory);
     free(arena);
 }

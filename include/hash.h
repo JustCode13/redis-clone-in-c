@@ -58,6 +58,9 @@ typedef struct HashTable {
 
 } HashTable;
 
+u64 fnv1a_hash(const char *key);
+
+u64 djb2_hash(const char *key);
 
 // Creates a new hash table with the specified initial capacity
 HashTable *hash_create(size_t capacity);

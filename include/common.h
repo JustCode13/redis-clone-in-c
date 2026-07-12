@@ -168,7 +168,7 @@ typedef enum {
 #if defined(__GNUC__) || defined(__clang__)
 
 // Converts a pointer to a structure member back into a pointer to the containing structure
-// Example: &person.age -> Person *
+// Example: &person.age->Person *
 #define container_of(ptr, type, member) \
     ((type *)((char *)(ptr) - offsetof(type, member)))
 

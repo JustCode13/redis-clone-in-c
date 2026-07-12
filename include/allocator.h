@@ -25,7 +25,7 @@ typedef struct Arena {
 typedef struct FreeBlock {
 
     // Size of this free block
-    size_t size;
+    size_t size;  // later check is size even necessary
 
     // Pointer to the next free block in the free list
     struct FreeBlock *next;
@@ -33,7 +33,7 @@ typedef struct FreeBlock {
 } FreeBlock;
 
 
-// Represents a pool allocator used for allocating fixed-size objects -> client objects
+// Represents a pool allocator used for allocating fixed-size objects->client objects
 typedef struct PoolAllocator {
 
     // Pointer to the beginning of the pool memory
@@ -81,7 +81,8 @@ void arena_destroy(Arena *arena);
 // object_count = total number of objects in the pool
 PoolAllocator *pool_create(
     size_t object_size,
-    size_t object_count
+    size_t object_count,
+    size_t alignment
 );
 
 

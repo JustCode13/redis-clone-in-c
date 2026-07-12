@@ -428,7 +428,7 @@ size_t probe_next(size_t index, size_t capacity) {
     }
 
     // Move to the next slot and wrap around if needed.
-    size_t next_index = (index + 1) % capacity;
+    size_t next_index = (index + 1) % capacity; 
 
     // Return the next index.
     return next_index;
