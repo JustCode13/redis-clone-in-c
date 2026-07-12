@@ -15,3 +15,25 @@ void list_init(List *list) {
     
     list->size = 0;
 }
+
+ListNode *list_push_front(List *list, void *data) {
+    if (list == NULL) {
+        return NULL;
+    }
+
+    ListNode *node = malloc(sizeof(*node));
+
+    if (node == NULL) {
+        return NULL;
+    }
+
+    node->data = data;
+    node->prev = &list->head;
+    node->next = list->head.next;
+
+    list->head.next->prev = node;
+    list->head.next = node;
+    list->size++;
+    
+    return node;
+}
