@@ -37,3 +37,26 @@ ListNode *list_push_front(List *list, void *data) {
     
     return node;
 }
+
+
+ListNode *list_push_back(List *list, void *data) {
+    if (list == NULL) {
+        return NULL;
+    }
+
+    ListNode *node = malloc(sizeof(*node));
+
+    if (node == NULL) {
+        return NULL;
+    }
+
+    node->data = data;
+    node->prev = list->tail.prev;
+    node->next = &list->tail;
+
+    list->tail.prev->next = node;
+    list->tail.prev = node;
+    list->size++;
+    
+    return node;
+}
