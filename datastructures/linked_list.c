@@ -111,6 +111,7 @@ void list_move_front(List *list, ListNode *node) {
     list->head.next = node;
 }
 
+
 ListNode *list_front(List *list) {
     if (list == NULL) {
         return NULL;
@@ -123,6 +124,25 @@ ListNode *list_front(List *list) {
     ListNode *node = list->head.next;
 
     if (node == NULL || node == &list->tail){
+        return NULL;
+    }
+
+    return node;
+}
+
+
+ListNode *list_back(List *list) {
+    if (list == NULL) {
+        return NULL;
+    }
+
+    if (list->tail.prev == &list->head) {
+        return NULL;
+    }
+
+    ListNode *node = list->tail.prev;
+
+    if (node == NULL || node == &list->head){
         return NULL;
     }
 
