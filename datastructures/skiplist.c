@@ -15,6 +15,7 @@ int random_level(void) {
     return level;
 }
 
+
 SkipNode *create_node(double score, const char *member, int level) {
     if (level < 1 || level > SKIPLIST_MAX_LEVEL || member == NULL) {
         return NULL;
@@ -45,3 +46,37 @@ SkipNode *create_node(double score, const char *member, int level) {
 
     return node;
 }
+
+    SkipList *skiplist_create(void) {
+        SkipList *list = malloc(sizeof(SkipList));
+
+        if (list == NULL) {
+            return NULL;
+        }
+
+        SkipNode *header = malloc(sizeof(SkipNode));
+
+        if (header == NULL) {
+            free(list);
+            return NULL;
+        }
+
+        header->member = NULL;
+        header->score = 0;
+
+        for (size_t i = 0; i < SKIPLIST_MAX_LEVEL; i++) {
+            header->forward[i] = NULL;
+        }
+
+        header->backward=NULL;
+        header->level=SKIPLIST_MAX_LEVEL;
+
+        list->header=header;
+        list->tail = NULL;
+        list->level = 1;
+        list->length = 0;
+
+        return list;
+    }
+
+
