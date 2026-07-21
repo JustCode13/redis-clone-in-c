@@ -219,3 +219,15 @@ bool skiplist_delete(SkipList *list, double score, const char *member) {
 
     return true;
 }
+
+SkipNode *skiplist_search(SkipList *list, double score, const char *member) {
+    if (list == NULL || member == NULL) {
+        return NULL;
+    }
+
+    if (list->header == NULL) {
+        return NULL;
+    }
+
+    
+}
