@@ -258,7 +258,6 @@ size_t skiplist_range(SkipList *list, double min, double max, SkipNode **result)
         return 0;
     }
 
-    free(*result);
     *result = NULL;
 
     SkipNode *current = list->header;
@@ -270,6 +269,42 @@ size_t skiplist_range(SkipList *list, double min, double max, SkipNode **result)
     }
 
     current = current->forward[0];
+    size_t count = 0;
 
-        
+    while (current != NULL) {
+        if (current->score > max) {
+            break;
+        }
+        count++;
+        current = current->forward[0];
+    }
+
+    if (count == 0) {
+        return 0;
+    }
+
+    SkipNode **matches = malloc(count * sizeof(SkipNode *));
+
+    if (matches == NULL) {
+        return 0;
+    }
+
+    current = list->header;
+
+    for (int level = list->level - 1; level >= 0; level--) {
+        while (current->forward[level] != NULL && current->forward[level]->score < min) {
+            current = current->forward[level];
+        }
+    }
+
+    current = current->forward[0];
+
+    for (size_t i = 0; i < count; i++) {
+        matches[0] = &current;
+        current = current->forward[0];
+    }
+
+    *result = matches;
+
+    return count;
 }
