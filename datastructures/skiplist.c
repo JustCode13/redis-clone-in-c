@@ -169,3 +169,53 @@ bool skiplist_insert(SkipList *list, double score, const char *member)
 
     return true;
 }
+
+
+bool skiplist_delete(SkipList *list, double score, const char *member) {
+    if (list == NULL || member == NULL) {
+        return false;
+    }
+
+    if (list->header == NULL) {
+        return false;
+    }
+
+    SkipNode *update[SKIPLIST_MAX_LEVEL];
+    SkipNode *current = list->header;
+    int level = list->level - 1;
+
+    for (int i = level; i >= 0; i--) {
+        while (current->forward[i] != NULL && (current->forward[i]->score < score || (current->forward[i]->score == score && strcmp(current->forward[i]->member,member) < 0))) {
+            current = current->forward[i];
+        }
+
+        update[i] = current;
+    }
+
+    current = current->forward[0];
+
+    if (current == NULL || current->score != score || strcmp(current->member, member) != 0) {
+        return false;
+    }
+
+    for (int i = 0; i < current->level; i++) {
+        update[i]->forward[i] = current->forward[i];
+    }
+
+    if (current->forward[0] != NULL) {
+        current->forward[0]->backward = current->backward;
+    } else {
+        list->tail = current->backward;
+    }
+
+    while (list->level > 1 && list->header->forward[list->level - 1] == NULL) {
+        list->level--;
+    }
+
+    list->length--;
+
+    free(current->member);
+    free(current);
+
+    return true;
+}
