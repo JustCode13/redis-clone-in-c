@@ -22,7 +22,7 @@ typedef struct SkipNode {
     double score;
 
     // Array of forward pointers, one for each level
-    struct SkipNode *forward[SKIPLIST_MAX_LEVEL];
+    struct SkipNode *forward[SKIPLIST_MAX_LEVEL]; // pointer to node ahead of it on each level
 
     // Pointer to the previous node on the lowest level
     struct SkipNode *backward;
