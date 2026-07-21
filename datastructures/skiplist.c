@@ -229,5 +229,22 @@ SkipNode *skiplist_search(SkipList *list, double score, const char *member) {
         return NULL;
     }
 
-    
+    SkipNode *current = list->header;
+
+    for (int level = list->level - 1; level >= 0; level--) {
+        while (current->forward[level] != NULL && 
+            (current->forward[level]->score < score || 
+                (current->forward[level]->score == score && 
+                    strcmp(current->forward[level]->member, member) < 0))) {
+            current = current->forward[level];
+        }
+    }
+
+    current = current->forward[0];
+
+    if (current == NULL || current->score != score || strcmp(current->member, member) != 0) {
+        return NULL;
+    }
+
+    return current;
 }
