@@ -248,3 +248,18 @@ SkipNode *skiplist_search(SkipList *list, double score, const char *member) {
 
     return current;
 }
+
+size_t skiplist_range(SkipList *list, double min, double max, SkipNode **result) {
+    if (list == NULL || list->header == NULL || result == NULL) {
+        return 0;
+    }
+
+    if (min > max) {
+        return 0;
+    }
+
+    free(*result);
+    *result = NULL;
+
+    
+}
