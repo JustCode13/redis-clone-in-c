@@ -16,5 +16,11 @@ bool db_expire(
 );
 
 
+// Removes all expired keys from the database.
+void db_cleanup_expired(
+    Database *db
+);
+
+
 
 #endif /* EXPIRE_H */
