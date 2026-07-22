@@ -260,7 +260,7 @@ size_t skiplist_range(SkipList *list, double min, double max, SkipNode **result)
 
     *result = NULL;
 
-    SkipNode *current = list->header;
+    SkipNode *current = list->header; 
 
     for (int level = list->level - 1; level >= 0; level--) {
         while (current->forward[level] != NULL && current->forward[level]->score < min) {
@@ -307,4 +307,17 @@ size_t skiplist_range(SkipList *list, double min, double max, SkipNode **result)
     *result = matches;
 
     return count;
+}
+
+void skiplist_destroy(SkipList *list) {
+    if (list == NULL) {
+        return;
+    }
+
+    if (list->header == NULL) {
+        free(list);
+        return;
+    }
+
+    
 }
