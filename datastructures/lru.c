@@ -63,3 +63,17 @@ RedisObject *lru_evict(Database *db) {
 
     return object;
 }
+
+RedisObject *lru_oldest(Database *db) {
+    if (db == NULL) {
+        return NULL;
+    }
+
+    ListNode *node = list_back(&db->lru);
+
+    if (node == NULL || node->data == NULL) {
+        return NULL;
+    }
+
+    return (RedisObject *)node->data;
+}
