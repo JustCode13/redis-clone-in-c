@@ -34,9 +34,11 @@ void lru_remove(Database *db, RedisObject *object) {
         return;
     }
 
-    SkipNode *node = object->lru_node;
+    ListNode *node = object->lru_node;
 
     list_remove(&db->lru, node);
 
-    
+    object->lru_node = NULL;
+
+    return;
 }
