@@ -18,5 +18,11 @@ void lru_insert(Database *db, RedisObject *object) {
         return;
     }
 
+    ListNode *node = list_push_front(&db->lru, object);
+
+    if (node == NULL) {
+        return;
+    }
+
     
 }
