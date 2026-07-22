@@ -42,3 +42,24 @@ void lru_remove(Database *db, RedisObject *object) {
 
     return;
 }
+
+
+RedisObject *lru_evict(Database *db) {
+    if (db == NULL) {
+        return NULL;
+    }
+
+    ListNode *node = list_back(&db->lru);
+
+    if (node == NULL || node->data == NULL) {
+        return NULL;
+    }
+
+    RedisObject *object = (RedisObject *)node->data;
+
+    list_remove(&db->lru, node);
+
+    object->lru_node = NULL;
+
+    return object;
+}
