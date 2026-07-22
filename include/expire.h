@@ -33,5 +33,8 @@ i64 ttl_remaining(
 );
 
 
+// Returns the current monotonic time in milliseconds.
+u64 current_monotonic_time(void);
+
 
 #endif /* EXPIRE_H */
