@@ -319,5 +319,13 @@ void skiplist_destroy(SkipList *list) {
         return;
     }
 
+    SkipNode *current = list->header;
+
+    while (current->forward[0] != NULL) {
+        free(current->forward[0]->member);
+        free(current);
+        current = current->forward[0];
+    }
+
     
 }
