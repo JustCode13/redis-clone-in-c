@@ -22,5 +22,16 @@ void db_cleanup_expired(
 );
 
 
+// Returns the remaining time-to-live (TTL) in milliseconds.
+//
+// Return values:
+//   > 0 : Remaining TTL
+//   = 0 : Expired
+//   < 0 : No expiration set
+i64 ttl_remaining(
+    const RedisObject *obj
+);
+
+
 
 #endif /* EXPIRE_H */
