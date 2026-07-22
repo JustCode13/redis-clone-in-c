@@ -14,4 +14,13 @@ void db_touch_lru(
 );
 
 
+// Removes the least recently used object from the database.
+//
+// Returns true if an object was evicted,
+// otherwise false.
+bool db_evict_lru(
+    Database *db
+);
+
+
 #endif /* LRU_H */
