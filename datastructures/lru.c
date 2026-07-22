@@ -14,7 +14,7 @@ void lru_touch(Database *db, RedisObject *object) {
 }
 
 void lru_insert(Database *db, RedisObject *object) {
-    if (db == NULL || object == NULL || object->lru_node == NULL) {
+    if (db == NULL || object == NULL || object->lru_node != NULL) {
         return;
     }
 
@@ -24,5 +24,7 @@ void lru_insert(Database *db, RedisObject *object) {
         return;
     }
 
-    
+    object->lru_node = node;
+
+    return;
 }
