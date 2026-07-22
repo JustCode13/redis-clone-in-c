@@ -28,3 +28,11 @@ void lru_insert(Database *db, RedisObject *object) {
 
     return;
 }
+
+void lru_remove(Database *db, RedisObject *object) {
+    if (db == NULL || object == NULL || object->lru_node == NULL) {
+        return;
+    }
+
+    
+}
