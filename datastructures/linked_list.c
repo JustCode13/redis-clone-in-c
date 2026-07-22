@@ -142,7 +142,7 @@ ListNode *list_back(List *list) {
 
     ListNode *node = list->tail.prev;
 
-    if (node == NULL || node == &list->head){
+    if (node == NULL){
         return NULL;
     }
 
