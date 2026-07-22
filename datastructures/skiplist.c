@@ -300,7 +300,7 @@ size_t skiplist_range(SkipList *list, double min, double max, SkipNode **result)
     current = current->forward[0];
 
     for (size_t i = 0; i < count; i++) {
-        matches[0] = &current;
+        matches[i] = &current;
         current = current->forward[0];
     }
 
@@ -322,10 +322,15 @@ void skiplist_destroy(SkipList *list) {
     SkipNode *current = list->header;
 
     while (current->forward[0] != NULL) {
+        SkipNode *next = current->forward[0];
         free(current->forward[0]->member);
         free(current);
-        current = current->forward[0];
+        current = next;
     }
 
-    
+    free(list->header);
+
+    free(list);
+
+    return;
 }
