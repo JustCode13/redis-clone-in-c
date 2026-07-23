@@ -13,4 +13,12 @@ void remove_expired(Database *db) {
     if (db->dict == NULL) {
         return;
     }
+
+    time_t now = time(NULL);
+
+    if (now == (time_t) - 1) {
+        return;
+    }
+
+    u64 current_time = (u64)now;
 }
