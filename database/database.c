@@ -26,7 +26,17 @@ void remove_expired(Database *db) {
         HashEntry *entry = &db->dict->entries[i];
 
         if (entry->state == EMPTY || entry->state == TOMBSTONE) {
-            return;
+            continue;
+        }
+
+        RedisObject *object = entry->value;
+
+        if (object->expire_at == 0) {
+            continue;
+        }
+
+        if (object->expire_at <= current_time) {
+            
         }
     }
 }
