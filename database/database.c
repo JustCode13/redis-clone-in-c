@@ -16,7 +16,7 @@ void remove_expired(Database *db) {
 
     time_t now = time(NULL);
 
-    if (now == (time_t) - 1) {
+    if (now == (time_t)-1) {
         return;
     }
 
