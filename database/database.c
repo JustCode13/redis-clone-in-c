@@ -35,27 +35,36 @@ void remove_expired(Database *db) {
 
         RedisObject *object = entry->value;
 
+        if (object == NULL) {
+            continue;
+        }
+
         if (object->expire_at == 0) {
             continue;
         }
 
         if (object->expire_at <= current_time) {
             if (!hash_remove(db->dict, entry->key)){
-                return;
+                continue;
             }
 
             if (object->lru_node != NULL) {
                 list_remove(&db->lru,object->lru_node);
+                object->lru_node = NULL;
             }
+
+            size_t released_memory = object_memory_usage(object);
 
             object_destroy(object);
 
             db->key_count--;
 
-            // update_memory_usage(db, )
+            update_memory_usage(db,-(ssize_t)released_memory);            
         }
     }
+    return;
 }
+
 
 size_t object_memory_usage(const RedisObject *object) {
     if (object == NULL) {
