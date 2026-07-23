@@ -21,4 +21,12 @@ void remove_expired(Database *db) {
     }
 
     u64 current_time = (u64)now;
+
+    for (size_t i = 0; i < db->dict->capacity; i++){
+        HashEntry *entry = &db->dict->entries[i];
+
+        if (entry->state == EMPTY || entry->state == TOMBSTONE) {
+            return;
+        }
+    }
 }
