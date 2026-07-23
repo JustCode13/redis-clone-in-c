@@ -5,6 +5,10 @@
 #include "allocator.h"
 
 
+void update_memory_usage(Database *db, ssize_t delta);
+size_t object_memory_usage(const RedisObject *object);
+
+
 void remove_expired(Database *db) {
     if (db == NULL) {
         return;
@@ -36,7 +40,39 @@ void remove_expired(Database *db) {
         }
 
         if (object->expire_at <= current_time) {
-            
+            if (!hash_remove(db->dict, entry->key)){
+                return;
+            }
+
+            if (object->lru_node != NULL) {
+                list_remove(&db->lru,object->lru_node);
+            }
+
+            object_destroy(object);
+
+            db->key_count--;
+
+            // update_memory_usage(db, )
         }
+    }
+}
+
+size_t object_memory_usage(const RedisObject *object) {
+    if (object == NULL) {
+        return 0;
+    }
+
+    size_t memory = sizeof(RedisObject);
+
+    switch (object->type) {
+        case OBJ_STRING: 
+            const char *str = object->value;
+
+            if (str != NULL) {
+                memory += strlen(str) + 1;
+            }
+
+            break;
+        
     }
 }
